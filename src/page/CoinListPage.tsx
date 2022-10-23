@@ -1,5 +1,8 @@
+import axios from "axios";
 import { useEffect, useState } from "react";
+import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
+import { fetchCoins } from "../api";
 import {
   CoinImage,
   CoinList,
@@ -21,17 +24,23 @@ interface CoinObject {
 }
 
 const ConiListPage = () => {
-  const [coin, setCoin] = useState<CoinObject[]>([]);
-  const [loading, setLoading] = useState(false);
+  const { isLoading, data } = useQuery<CoinObject[]>("allCoins", fetchCoins);
+  // const [coin, setCoin] = useState<CoinObject[]>([]);
+  // const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    (async () => {
-      const res = await fetch("https://api.coinpaprika.com/v1/coins");
-      const json = await res.json();
-      setCoin(json.slice(0, 100));
-      setLoading(true);
-    })();
-  }, []);
+  // const info = async () => {
+  //   try {
+  //     const res = await axios.get("https://api.coinpaprika.com/v1/coins");
+  //     setCoin(res.data.slice(0, 100));
+  //     setLoading(true);
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   info();
+  // }, []);
 
   return (
     <Container>
@@ -39,11 +48,13 @@ const ConiListPage = () => {
         <Title>코인</Title>
       </Header>
 
-      {loading ? (
+      {isLoading ? (
+        <Loading>Loading</Loading>
+      ) : (
         <CoinList>
-          {coin.map((coin) => (
+          {data?.slice(0, 10).map((coin) => (
             <Coins key={coin.id}>
-              <Link to={`/${coin.id}`}>
+              <Link to={`/${coin.id}`} state={coin.name}>
                 <CoinImage
                   src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`}
                 />
@@ -52,8 +63,6 @@ const ConiListPage = () => {
             </Coins>
           ))}
         </CoinList>
-      ) : (
-        <Loading>Loading</Loading>
       )}
     </Container>
   );
