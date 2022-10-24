@@ -25,22 +25,6 @@ interface CoinObject {
 
 const ConiListPage = () => {
   const { isLoading, data } = useQuery<CoinObject[]>("allCoins", fetchCoins);
-  // const [coin, setCoin] = useState<CoinObject[]>([]);
-  // const [loading, setLoading] = useState(false);
-
-  // const info = async () => {
-  //   try {
-  //     const res = await axios.get("https://api.coinpaprika.com/v1/coins");
-  //     setCoin(res.data.slice(0, 100));
-  //     setLoading(true);
-  //   } catch (e) {
-  //     console.error(e);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   info();
-  // }, []);
 
   return (
     <Container>
