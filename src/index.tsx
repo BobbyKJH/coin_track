@@ -5,15 +5,23 @@ import App from "./App";
 import { ThemeProvider } from "styled-components";
 import { ResetStyle } from "./style/reset.styled";
 import { theme } from "./style/theme.styled";
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
+
+const queryClient = new QueryClient();
+
 root.render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <ResetStyle />
-      <App />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider theme={theme}>
+        <ResetStyle />
+        <App />
+        <ReactQueryDevtools initialIsOpen={true} />
+      </ThemeProvider>
+    </QueryClientProvider>
   </React.StrictMode>
 );
