@@ -1,9 +1,7 @@
-import { useEffect, useState } from "react";
 import { Route, Routes, useLocation, useParams } from "react-router";
-import { Link, useMatch } from "react-router-dom";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import ChartPage from "./ChartPage";
-import PricePage from "./PricePage";
 import { useQuery } from "react-query";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
 
@@ -52,12 +50,6 @@ const Description = styled.p`
   margin: 20px 0px;
 `;
 
-interface RouteParams {
-  coinId: string;
-}
-interface RouteState {
-  name: string;
-}
 interface InfoData {
   id: string;
   name: string;
@@ -118,12 +110,18 @@ const CoinDetailPage = () => {
 
   const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
     ["info", coinId],
-    () => fetchCoinInfo(coinId)
+    () => fetchCoinInfo(coinId),
+    {
+      refetchInterval: 5000,
+    }
   );
 
   const { isLoading: tickersLoading, data: tickersData } = useQuery<TickerData>(
     ["tikcer", coinId],
-    () => fetchCoinTickers(coinId)
+    () => fetchCoinTickers(coinId),
+    {
+      refetchInterval: 5000,
+    }
   );
 
   const loading = infoLoading || tickersLoading;
@@ -142,7 +140,7 @@ const CoinDetailPage = () => {
           <Overview>
             <OverviewItem>
               <span>Rank:</span>
-              <span>{infoData?.rank}</span>
+              <span>{infoData?.last_data_at}</span>
             </OverviewItem>
             <OverviewItem>
               <span>Symbol:</span>
@@ -169,8 +167,7 @@ const CoinDetailPage = () => {
           <Link to={`/${coinId}/chart`}>chart</Link>
 
           <Routes>
-            <Route path="chart" element={<ChartPage />} />
-            <Route path="price" element={<PricePage />} />
+            <Route path="chart" element={<ChartPage coinId={coinId} />} />
           </Routes>
         </>
       )}
